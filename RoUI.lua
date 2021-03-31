@@ -42,7 +42,7 @@ local function CreateUIEffect(effectName, func)
 	local meta = {};
 	meta.__index = meta;
 	meta.__call = function(_, ...)
-		coroutine.wrap(func)(...);
+		return func(...);
 	end
 	
 	local this = setmetatable({}, meta);
@@ -209,7 +209,25 @@ function RoUIObjectClass.Visibility(self, bool)
 end
 
 function RoUIObjectClass.PlayEffect(self, effect)
-	effect(self.Instance);
+	return effect(self.Instance);
+end
+
+function RoUIObjectClass.TweenColor(self, property, newColor, speed, easeStyle, easeDir)
+	local finalGoal = {};
+	finalGoal[property] = newColor;
+	
+	local tween = game:GetService("TweenService"):Create(self.Instance, TweenInfo.new(speed or 1, easeStyle or Enum.EasingStyle.Sine, easeDir or Enum.EasingDirection.InOut), finalGoal);
+	tween:Play();
+	return tween;
+end
+
+function RoUIObjectClass.TweenTransparency(self, newTransparency, speed, easeStyle, easeDir)
+	local finalGoal = {};
+	finalGoal.Transparency = newTransparency;
+	
+	local tween = game:GetService("TweenService"):Create(self.Instance, TweenInfo.new(speed or 1, easeStyle or Enum.EasingStyle.Sine, easeDir or Enum.EasingDirection.InOut), finalGoal);
+	tween:Play();
+	return tween;
 end
 
 -----// Load Built-In Effects //-----
@@ -218,7 +236,7 @@ if script:FindFirstChild("Built-In Effects") then
 		if not source:IsA("ModuleScript") then continue end
 		
 		local newSource = require(source);
-		RoUIBuiltInEffects["!" .. source.Name] = CreateUIEffect("RadialGrow", newSource);
+		RoUIBuiltInEffects["!" .. source.Name] = CreateUIEffect(source.Name, newSource);
 	end
 end
 
