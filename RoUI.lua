@@ -4,7 +4,7 @@
 	
 	Create UI effects simply and efficiently.
 	GitHub: https://github.com/impRBLX/RoUI
-	v1.2
+	v1.3
 
 ]]
 
